@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "github.com/anirudhp26/oms";
+
+package api;
+
+message Order {
+    string ID = 1;
+    string CustomerId = 2;
+    string Status = 3;
+    repeated Item Items = 4;
+}
+
+service OrderService {
+    rpc CreateOrder(CreateOrderRequest) returns (Order);
+    rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message GetOrderRequest {
+    string ID = 1;
+}
+
+message Item {
+    string ID = 1;
+    string Name = 2;
+    string PriceId = 3;
+    int32 Quantity = 4;
+}
+
+message ItemsWithQuantity {
+    string ID = 1;
+    int32 Quantity = 2;
+}
+
+message CreateOrderRequest {
+    string CustomerId = 1;
+    repeated ItemsWithQuantity Items = 2;
+}
