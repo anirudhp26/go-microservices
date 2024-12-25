@@ -1,9 +1,23 @@
 package main
 
+import (
+	"context"
+
+	pb "github.com/anirudhp26/commons/api"
+	"google.golang.org/grpc"
+)
+
 type handler struct {
 	// Add any dependencies here
+	pb.UnimplementedStockServiceServer
 }
 
-// func NewHandler(server *grpc.Server) *handler {
-// 	handler := &handler{}
-// }
+func NewGRPCHandler(server *grpc.Server) {
+	handler := &handler{}
+	pb.RegisterStockServiceServer(server, handler)
+}
+
+func (h *handler) CheckOutStock(ctx context.Context, payload *pb.CheckOutStockRequest) (*pb.CheckOutStockResponse, error) {
+	// Add your implementation here
+	return nil, nil
+}

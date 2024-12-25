@@ -14,6 +14,7 @@ import (
 var (
 	grpcAddr           = commons.EnvString("GRPC_ADDR", "localhost:5001")
 	paymentServiceAddr = commons.EnvString("PAYMENT_SERVICE_ADDR", "localhost:5002")
+	stockServiceAddr   = commons.EnvString("STOCK_SERVICE_ADDR", "localhost:5003")
 )
 
 func main() {
@@ -21,13 +22,21 @@ func main() {
 	store := NewStore()
 	svc := NewService(store)
 
-	psConn, err := grpc.NewClient(paymentServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Fatalf("failed to connect to payment service: %v", err)
+	psConn, psErr := grpc.NewClient(paymentServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if psErr != nil {
+		log.Fatalf("failed to connect to payment service: %v", psErr)
 	}
 	defer psConn.Close()
+	ssConn, ssErr := grpc.NewClient(stockServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if ssErr != nil {
+		log.Fatalf("failed to connect to stock service: %v", ssErr)
+	}
+	defer ssConn.Close()
+
 	paymentServiceClient := pg.NewPaymentServiceClient(psConn)
-	NewGRPCHandler(grpcServer, paymentServiceClient)
+	stockServiceClient := pg.NewStockServiceClient(ssConn)
+
+	NewGRPCHandler(grpcServer, paymentServiceClient, stockServiceClient)
 
 	svc.CreateOrder(context.Background())
 
