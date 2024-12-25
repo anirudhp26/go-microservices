@@ -14,7 +14,13 @@ message Order {
 
 service OrderService {
     rpc CreateOrder(CreateOrderRequest) returns (Order);
+    rpc PayforOrder(PayforOrderRequest) returns (MessageStatusResponse);
     rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message PayforOrderRequest {
+    string TransactionId = 1;
+    string OrderId = 2;
 }
 
 message GetOrderRequest {
@@ -58,8 +64,8 @@ message ProcessPaymentResponse {
 
 // Stock service
 service StockService {
-    rpc CheckOutStock(CheckOutStockRequest) returns (CheckOutStockResponse);
-    rpc CheckInStock(CheckInStockRequest) returns (CheckInStockResponse);
+    rpc CheckOutStock(CheckOutStockRequest) returns (MessageStatusResponse);
+    rpc CheckInStock(CheckInStockRequest) returns (MessageStatusResponse);
 }
 
 message CheckOutStockRequest {
@@ -68,18 +74,13 @@ message CheckOutStockRequest {
     repeated ItemsWithQuantity Items = 3;
 }
 
-message CheckOutStockResponse {
-    bool Success = 1;
-    string message = 2;
-}
-
 message CheckInStockRequest {
     string OrderId = 1;
     string CustomerId = 2;
     repeated ItemsWithQuantity Items = 3;
 }
 
-message CheckInStockResponse {
-    bool Success = 1;
-    string message = 2;
+message MessageStatusResponse {
+    string Message = 1;
+    bool Success = 2;
 }
