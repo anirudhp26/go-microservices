@@ -4,6 +4,7 @@ option go_package = "github.com/anirudhp26/oms";
 
 package api;
 
+// Orders service
 message Order {
     string ID = 1;
     string CustomerId = 2;
@@ -35,4 +36,50 @@ message ItemsWithQuantity {
 message CreateOrderRequest {
     string CustomerId = 1;
     repeated ItemsWithQuantity Items = 2;
+}
+
+// Payments service
+service PaymentService {
+    rpc ProcessPayment(ProcessPaymentRequest) returns (ProcessPaymentResponse);
+}
+
+message ProcessPaymentRequest {
+    string OrderId = 1;
+    string CustomerId = 2;
+    string PaymentMethod = 3;
+    string PaymentMethodId = 4;
+    int32 Amount = 5;
+}
+
+message ProcessPaymentResponse {
+    string PaymentId = 1;
+    bool Success = 2;
+}
+
+// Stock service
+service StockService {
+    rpc CheckOutStock(CheckOutStockRequest) returns (CheckOutStockResponse);
+    rpc CheckInStock(CheckInStockRequest) returns (CheckInStockResponse);
+}
+
+message CheckOutStockRequest {
+    string OrderId = 1;
+    string CustomerId = 2;
+    repeated ItemsWithQuantity Items = 3;
+}
+
+message CheckOutStockResponse {
+    bool Success = 1;
+    string message = 2;
+}
+
+message CheckInStockRequest {
+    string OrderId = 1;
+    string CustomerId = 2;
+    repeated ItemsWithQuantity Items = 3;
+}
+
+message CheckInStockResponse {
+    bool Success = 1;
+    string message = 2;
 }
