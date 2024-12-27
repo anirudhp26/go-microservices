@@ -17,7 +17,7 @@ func NewGRPCHandler(server *grpc.Server) {
 	pb.RegisterStockServiceServer(server, handler)
 }
 
-func (h *handler) CheckOutStock(ctx context.Context, payload *pb.CheckOutStockRequest) (*pb.CheckOutStockResponse, error) {
+func (h *handler) CheckOutStock(ctx context.Context, payload *pb.CheckOutStockRequest) (*pb.MessageStatusResponse, error) {
 	// Add your implementation here
 	return nil, nil
 }

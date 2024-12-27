@@ -10,17 +10,12 @@ message Order {
     string CustomerId = 2;
     string Status = 3;
     repeated Item Items = 4;
+    string TransactionId = 5;
 }
 
 service OrderService {
     rpc CreateOrder(CreateOrderRequest) returns (Order);
-    rpc PayforOrder(PayforOrderRequest) returns (MessageStatusResponse);
     rpc GetOrder(GetOrderRequest) returns (Order);
-}
-
-message PayforOrderRequest {
-    string TransactionId = 1;
-    string OrderId = 2;
 }
 
 message GetOrderRequest {
@@ -54,7 +49,9 @@ message ProcessPaymentRequest {
     string CustomerId = 2;
     string PaymentMethod = 3;
     string PaymentMethodId = 4;
-    int32 Amount = 5;
+    optional string PaymentMetadata = 6;
+    string TransactionId = 7;
+    int32 Amount = 8;
 }
 
 message ProcessPaymentResponse {

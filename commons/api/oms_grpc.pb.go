@@ -275,8 +275,8 @@ const (
 //
 // Stock service
 type StockServiceClient interface {
-	CheckOutStock(ctx context.Context, in *CheckOutStockRequest, opts ...grpc.CallOption) (*CheckOutStockResponse, error)
-	CheckInStock(ctx context.Context, in *CheckInStockRequest, opts ...grpc.CallOption) (*CheckInStockResponse, error)
+	CheckOutStock(ctx context.Context, in *CheckOutStockRequest, opts ...grpc.CallOption) (*MessageStatusResponse, error)
+	CheckInStock(ctx context.Context, in *CheckInStockRequest, opts ...grpc.CallOption) (*MessageStatusResponse, error)
 }
 
 type stockServiceClient struct {
@@ -287,9 +287,9 @@ func NewStockServiceClient(cc grpc.ClientConnInterface) StockServiceClient {
 	return &stockServiceClient{cc}
 }
 
-func (c *stockServiceClient) CheckOutStock(ctx context.Context, in *CheckOutStockRequest, opts ...grpc.CallOption) (*CheckOutStockResponse, error) {
+func (c *stockServiceClient) CheckOutStock(ctx context.Context, in *CheckOutStockRequest, opts ...grpc.CallOption) (*MessageStatusResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CheckOutStockResponse)
+	out := new(MessageStatusResponse)
 	err := c.cc.Invoke(ctx, StockService_CheckOutStock_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -297,9 +297,9 @@ func (c *stockServiceClient) CheckOutStock(ctx context.Context, in *CheckOutStoc
 	return out, nil
 }
 
-func (c *stockServiceClient) CheckInStock(ctx context.Context, in *CheckInStockRequest, opts ...grpc.CallOption) (*CheckInStockResponse, error) {
+func (c *stockServiceClient) CheckInStock(ctx context.Context, in *CheckInStockRequest, opts ...grpc.CallOption) (*MessageStatusResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CheckInStockResponse)
+	out := new(MessageStatusResponse)
 	err := c.cc.Invoke(ctx, StockService_CheckInStock_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -313,8 +313,8 @@ func (c *stockServiceClient) CheckInStock(ctx context.Context, in *CheckInStockR
 //
 // Stock service
 type StockServiceServer interface {
-	CheckOutStock(context.Context, *CheckOutStockRequest) (*CheckOutStockResponse, error)
-	CheckInStock(context.Context, *CheckInStockRequest) (*CheckInStockResponse, error)
+	CheckOutStock(context.Context, *CheckOutStockRequest) (*MessageStatusResponse, error)
+	CheckInStock(context.Context, *CheckInStockRequest) (*MessageStatusResponse, error)
 	mustEmbedUnimplementedStockServiceServer()
 }
 
@@ -325,10 +325,10 @@ type StockServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedStockServiceServer struct{}
 
-func (UnimplementedStockServiceServer) CheckOutStock(context.Context, *CheckOutStockRequest) (*CheckOutStockResponse, error) {
+func (UnimplementedStockServiceServer) CheckOutStock(context.Context, *CheckOutStockRequest) (*MessageStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckOutStock not implemented")
 }
-func (UnimplementedStockServiceServer) CheckInStock(context.Context, *CheckInStockRequest) (*CheckInStockResponse, error) {
+func (UnimplementedStockServiceServer) CheckInStock(context.Context, *CheckInStockRequest) (*MessageStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckInStock not implemented")
 }
 func (UnimplementedStockServiceServer) mustEmbedUnimplementedStockServiceServer() {}
