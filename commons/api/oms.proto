@@ -15,7 +15,15 @@ message Order {
 
 service OrderService {
     rpc CreateOrder(CreateOrderRequest) returns (Order);
+    rpc ProcessOrder(ProcessOrderRequest) returns (MessageStatusResponse);
     rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message ProcessOrderRequest {
+    string TransactionId = 1;
+    string OrderId = 2;
+    string CustomerId = 3;
+    repeated Item Items = 4;
 }
 
 message GetOrderRequest {
@@ -68,7 +76,7 @@ service StockService {
 message CheckOutStockRequest {
     string OrderId = 1;
     string CustomerId = 2;
-    repeated ItemsWithQuantity Items = 3;
+    repeated Item Items = 3;
 }
 
 message CheckInStockRequest {

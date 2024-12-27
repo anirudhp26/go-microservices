@@ -27,6 +27,7 @@ func (h *handler) InitRoutes(mux *http.ServeMux) {
 	})
 
 	mux.HandleFunc("/api/v1/customers/{customerId}/orders", h.CreateOrder)
+	mux.HandleFunc("/api/v1/customers/{customerId}/orders/{orderId}/process", h.ProcessOrder)
 }
 
 // CreateOrder is a handler for creating an order
@@ -40,5 +41,14 @@ func (h *handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	h.orderClient.CreateOrder(r.Context(), &pb.CreateOrderRequest{ // Call the CreateOrder method on the order service
 		CustomerId: customerId,
 		Items:      items,
+	})
+}
+
+func (h *handler) ProcessOrder(w http.ResponseWriter, r *http.Request) {
+	orderId := r.PathValue("orderId")
+	transactionId := r.URL.Query().Get("transactionId")
+	h.orderClient.ProcessOrder(r.Context(), &pb.ProcessOrderRequest{
+		OrderId:       orderId,
+		TransactionId: transactionId,
 	})
 }

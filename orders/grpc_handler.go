@@ -11,7 +11,6 @@ import (
 )
 
 type grpcHandler struct {
-	// Add any dependencies here
 	pb.UnimplementedOrderServiceServer
 	paymentServiceClient pb.PaymentServiceClient
 	stockServiceClient   pb.StockServiceClient
@@ -37,4 +36,36 @@ func (h *grpcHandler) CreateOrder(ctx context.Context, payload *pb.CreateOrderRe
 		TransactionId: transactionId,
 	}
 	return order, nil
+}
+
+func (h *grpcHandler) ProcessOrder(ctx context.Context, payload *pb.ProcessOrderRequest) (*pb.MessageStatusResponse, error) {
+	log.Printf("Processing order: %v", payload)
+	paymentRes, paymentErr := h.paymentServiceClient.ProcessPayment(ctx, &pb.ProcessPaymentRequest{
+		TransactionId: payload.TransactionId,
+		OrderId:       payload.OrderId,
+	})
+	if paymentErr != nil {
+		return nil, paymentErr
+	}
+	if paymentRes.Success {
+		log.Printf("Payment Done for order Id: %v", payload.OrderId)
+		stockRes, stockErr := h.stockServiceClient.CheckOutStock(ctx, &pb.CheckOutStockRequest{
+			OrderId:    payload.OrderId,
+			CustomerId: payload.CustomerId,
+			Items:      payload.Items,
+		})
+		if stockErr != nil {
+			return nil, paymentErr
+		}
+		if stockRes.Success {
+			return &pb.MessageStatusResponse{
+				Message: "Order Accepted",
+				Success: true,
+			}, nil
+		} else {
+			return nil, fmt.Errorf("Some Error occured, try again later")
+		}
+	} else {
+		return nil, fmt.Errorf("Some error Occured, try again later")
+	}
 }
